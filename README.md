@@ -4,8 +4,22 @@ ChatGPT 느낌의 세금 상담 UI MVP.
 
 ## 실행 (데모)
 
+### Windows (가장 쉬운 방법)
+
+- `run-demo.bat` 더블클릭 (또는 PowerShell에서 `run-demo.ps1`)
+
+또는 터미널에서:
+
 ```bash
-cd /workspace
+npm install
+npm run demo
+```
+
+`npm run demo`는 실행 후 **브라우저를 자동으로 열어줍니다**. (원하면 `AITAX_NO_OPEN=1`로 자동 오픈 끄기)
+
+### macOS / Linux
+
+```bash
 npm install
 npm run demo
 ```

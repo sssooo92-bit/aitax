@@ -2,6 +2,8 @@
 const { spawn } = require('node:child_process');
 const net = require('node:net');
 const os = require('node:os');
+const fs = require('node:fs');
+const path = require('node:path');
 
 function bin(name) {
   // Use local binary if present (npm install), otherwise fall back to npx.
@@ -18,6 +20,30 @@ function run(cmd, args, opts = {}) {
     });
     p.on('error', reject);
   });
+}
+
+function tryOpenBrowser(url) {
+  if (process.env.AITAX_NO_OPEN === '1') return;
+
+  const platform = process.platform;
+  try {
+    if (platform === 'win32') {
+      // Use cmd's "start" to open default browser
+      const p = spawn('cmd', ['/c', 'start', '', url], { stdio: 'ignore', detached: true });
+      p.unref();
+      return;
+    }
+    if (platform === 'darwin') {
+      const p = spawn('open', [url], { stdio: 'ignore', detached: true });
+      p.unref();
+      return;
+    }
+    // linux and others
+    const p = spawn('xdg-open', [url], { stdio: 'ignore', detached: true });
+    p.unref();
+  } catch {
+    // ignore
+  }
 }
 
 function tryListen(port, host = '0.0.0.0') {
@@ -78,11 +104,29 @@ async function main() {
   console.log('');
 
   const lan = guessLanIp();
-  console.log(`- Local:   http://localhost:${port}`);
+  const localUrl = `http://localhost:${port}`;
+  console.log(`- Local:   ${localUrl}`);
   console.log(`- Network: http://${host}:${port}${lan ? ` (LAN: http://${lan}:${port})` : ''}`);
   console.log('');
   console.log('원격/컨테이너 환경이면 “Ports/Preview”에서 열린 주소로 접속해야 합니다.');
   console.log('');
+
+  // Write a small file so people can easily find the URL.
+  try {
+    const out = {
+      app: 'ai세금',
+      startedAt: new Date().toISOString(),
+      host,
+      port,
+      localUrl
+    };
+    fs.writeFileSync(path.join(process.cwd(), '.aitax-demo.json'), JSON.stringify(out, null, 2));
+  } catch {
+    // ignore
+  }
+
+  // Open browser automatically (especially helpful on Windows)
+  tryOpenBrowser(localUrl);
 
   try {
     await run(bin('next'), ['start', '-H', host, '-p', String(port)]);
