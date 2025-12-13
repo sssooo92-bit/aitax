@@ -20,6 +20,12 @@ npm run demo
 npm run dev
 ```
 
+## 프로덕션처럼 실행
+
+```bash
+npm run start
+```
+
 ## OpenAI 연결(선택)
 
 ```bash

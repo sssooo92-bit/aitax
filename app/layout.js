@@ -1,5 +1,6 @@
 import './globals.css';
 import { JetBrains_Mono, Noto_Sans_KR } from 'next/font/google';
+import Script from 'next/script';
 
 export const metadata = {
   title: 'ai세금',
@@ -23,11 +24,9 @@ const mono = JetBrains_Mono({
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
-      <body>{children}</body>
-      <script
-        // Set theme early to avoid flash.
-        dangerouslySetInnerHTML={{
-          __html: `
+      <body>
+        <Script id="aitax-theme-init" strategy="beforeInteractive">
+          {`
 (() => {
   try {
     const key = 'aitax.theme.v1';
@@ -36,8 +35,10 @@ export default function RootLayout({ children }) {
     document.documentElement.dataset.theme = theme;
   } catch (e) {}
 })();`
-        }}
-      />
+          }
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }
