@@ -19,10 +19,12 @@ function formatTime(ts) {
 
 function defaultConversation() {
   const id = uid();
+  const now = new Date().toISOString();
   return {
     id,
     title: '새 대화',
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
     messages: [
       {
         id: uid(),
@@ -95,12 +97,51 @@ async function typeInto(setText, fullText, speedMs = 10) {
   }
 }
 
+function linkify(text) {
+  const s = String(text || '');
+  const parts = [];
+  const re = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+  let lastIndex = 0;
+  let match;
+  // eslint-disable-next-line no-cond-assign
+  while ((match = re.exec(s))) {
+    const url = match[0];
+    const start = match.index;
+    if (start > lastIndex) parts.push(s.slice(lastIndex, start));
+    const href = url.startsWith('http') ? url : `https://${url}`;
+    parts.push(
+      <a key={`${start}_${url}`} href={href} target="_blank" rel="noreferrer" className="link">
+        {url}
+      </a>
+    );
+    lastIndex = start + url.length;
+  }
+  if (lastIndex < s.length) parts.push(s.slice(lastIndex));
+  return parts;
+}
+
+function MessageText({ text }) {
+  const lines = String(text || '').split('\n');
+  return (
+    <div className="msgText">
+      {lines.map((line, idx) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <p key={idx} className="msgLine">
+          {linkify(line)}
+          {line.length === 0 ? <span className="msgEmpty">&nbsp;</span> : null}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [conversations, setConversations] = useLocalStorageState(STORAGE_KEY, [defaultConversation()]);
   const [activeId, setActiveId] = useLocalStorageState('aitax.activeId.v1', conversations?.[0]?.id);
   const [query, setQuery] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [search, setSearch] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const chatRef = useRef(null);
   const textareaRef = useRef(null);
@@ -117,6 +158,22 @@ export default function HomePage() {
     el.scrollTop = el.scrollHeight;
   }, [active?.messages?.length]);
 
+  useEffect(() => {
+    // Close drawer on desktop resize
+    function onResize() {
+      if (window.innerWidth > 960) setSidebarOpen(false);
+    }
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [sidebarOpen]);
+
   const filteredConversations = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return conversations;
@@ -132,6 +189,7 @@ export default function HomePage() {
     setConversations((prev) => [c, ...prev]);
     setActiveId(c.id);
     setQuery('');
+    setSidebarOpen(false);
     textareaRef.current?.focus();
   }
 
@@ -142,6 +200,11 @@ export default function HomePage() {
       const remaining = conversations.filter((c) => c.id !== id);
       return remaining[0]?.id;
     });
+  }
+
+  function applyPrompt(text) {
+    setQuery(text);
+    textareaRef.current?.focus();
   }
 
   async function send() {
@@ -158,6 +221,7 @@ export default function HomePage() {
     updateConversation(active.id, (c) => {
       const next = {
         ...c,
+        updatedAt: new Date().toISOString(),
         messages: [...c.messages, userMsg, placeholder]
       };
       if (c.title === '새 대화') next.title = shortTitleFrom(text);
@@ -174,6 +238,7 @@ export default function HomePage() {
         (partial) => {
           updateConversation(active.id, (c) => ({
             ...c,
+            updatedAt: new Date().toISOString(),
             messages: c.messages.map((m) => (m.id === assistantId ? { ...m, content: partial } : m))
           }));
         },
@@ -184,6 +249,7 @@ export default function HomePage() {
       if (res.mode && res.mode !== 'openai') {
         updateConversation(active.id, (c) => ({
           ...c,
+          updatedAt: new Date().toISOString(),
           messages: c.messages.map((m) =>
             m.id === assistantId
               ? {
@@ -197,6 +263,7 @@ export default function HomePage() {
     } catch (e) {
       updateConversation(active.id, (c) => ({
         ...c,
+        updatedAt: new Date().toISOString(),
         messages: c.messages.map((m) => (m.id === assistantId ? { ...m, content: `요청 중 오류가 발생했어요: ${String(e?.message || e)}` } : m))
       }));
     } finally {
@@ -212,15 +279,36 @@ export default function HomePage() {
     }
   }
 
+  const starterPrompts = useMemo(
+    () => [
+      { k: 'vat', t: '부가세 신고 준비: 일반과세자, 이번 과세기간 매출/매입 정리 방법 알려줘' },
+      { k: 'yearend', t: '연말정산 공제: 총급여/부양가족 기준으로 무엇부터 챙기면 돼?' },
+      { k: 'transfer', t: '양도소득세: 1주택 비과세 요건을 체크리스트로 정리해줘' },
+      { k: 'gift', t: '상속·증여: 부모→자녀 증여 시 기본 공제/신고 흐름 알려줘' }
+    ],
+    []
+  );
+
+  const showStarters = (active?.messages?.length || 0) <= 1;
+
   return (
     <div className="shell">
-      <aside className="sidebar">
+      {sidebarOpen ? <div className="backdrop" onClick={() => setSidebarOpen(false)} role="button" tabIndex={0} /> : null}
+
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="brand">
           <div className="title">
-            <h1>ai세금</h1>
-            <div className="subtitle">ChatGPT 스타일 세금 상담 UI</div>
+            <div className="logoRow">
+              <div className="logoMark" aria-hidden="true">
+                a
+              </div>
+              <div>
+                <h1>ai세금</h1>
+                <div className="subtitle">세금 질문을 더 빠르고, 더 깔끔하게.</div>
+              </div>
+            </div>
           </div>
-          <div className="pill">MVP</div>
+          <div className="pill">beta</div>
         </div>
 
         <div className="actions">
@@ -243,19 +331,21 @@ export default function HomePage() {
 
         <div className="convList">
           {filteredConversations.map((c) => {
-            const last = c.messages?.[c.messages.length - 1];
             return (
               <div
                 key={c.id}
                 className={`convItem ${c.id === active?.id ? 'active' : ''}`}
-                onClick={() => setActiveId(c.id)}
+                onClick={() => {
+                  setActiveId(c.id);
+                  setSidebarOpen(false);
+                }}
                 role="button"
                 tabIndex={0}
               >
                 <div className="name">{c.title || '새 대화'}</div>
                 <div className="meta">
-                  <span>{(c.messages?.length || 0) - 1} msgs</span>
-                  <span>{formatTime(last?.id ? c.createdAt : c.createdAt)}</span>
+                  <span>{Math.max(0, (c.messages?.length || 0) - 1)} msgs</span>
+                  <span>{formatTime(c.updatedAt || c.createdAt)}</span>
                 </div>
               </div>
             );
@@ -263,30 +353,63 @@ export default function HomePage() {
         </div>
 
         <div className="footerNote">
-          - 질문이 구체적일수록 정확해요.\n- 답변은 참고용이며, 중요한 의사결정은 세무사 상담을 권장합니다.
+          <div className="footerLine">- 질문이 구체적일수록 정확해요.</div>
+          <div className="footerLine">- 답변은 참고용이며, 중요한 의사결정은 세무사 상담을 권장합니다.</div>
         </div>
       </aside>
 
       <main className="main">
         <div className="topbar">
           <div className="left">
-            <div className="h">{active?.title || 'ai세금'}</div>
+            <div className="h">
+              <button className="iconBtn mobileOnly" onClick={() => setSidebarOpen(true)} aria-label="대화 목록 열기">
+                ☰
+              </button>
+              <span className="topTitle">{active?.title || 'ai세금'}</span>
+            </div>
             <div className="s">
               <span className="badge">Enter</span> 전송 · <span className="badge">Shift+Enter</span> 줄바꿈
             </div>
           </div>
-          <div className="pill">{isSending ? '응답 생성 중…' : '대기 중'}</div>
+          <div className="topRight">
+            <button className="btn subtle desktopOnly" onClick={newConversation}>
+              새 대화
+            </button>
+            <div className={`pill ${isSending ? 'live' : ''}`}>{isSending ? '응답 생성 중…' : '대기 중'}</div>
+          </div>
         </div>
 
         <div className="chat" ref={chatRef}>
           <div className="chatInner">
+            {showStarters ? (
+              <div className="starterCard">
+                <div className="starterTitle">빠른 시작</div>
+                <div className="starterDesc">아래 예시를 눌러 시작하거나, 직접 상황을 적어주세요.</div>
+                <div className="chips">
+                  {starterPrompts.map((p) => (
+                    <button key={p.k} className="chip" onClick={() => applyPrompt(p.t)}>
+                      {p.t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
             {(active?.messages || []).map((m) => (
               <div key={m.id} className={`bubble ${m.role === 'user' ? 'user' : 'assistant'}`}>
                 <div className="role">
                   <span>{m.role === 'user' ? '사용자' : 'ai세금'}</span>
                   <span className="badge">{m.role}</span>
                 </div>
-                {m.content}
+                {m.role === 'assistant' && isSending && m.content === '' ? (
+                  <div className="dots" aria-label="응답 생성 중">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                ) : (
+                  <MessageText text={m.content} />
+                )}
               </div>
             ))}
           </div>
@@ -309,7 +432,7 @@ export default function HomePage() {
             </div>
 
             <button className="btn primary send" onClick={send} disabled={isSending || !query.trim()}>
-              {isSending ? '생성 중…' : '전송'}
+              {isSending ? '생성 중…' : '전송 →'}
             </button>
           </div>
         </div>
