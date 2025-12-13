@@ -6,7 +6,7 @@
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
     "start": "next build && next start -H 0.0.0.0 -p 3000",
-    "demo": "npm run start"
+    "demo": "node scripts/demo.js"
   },
   "dependencies": {
     "next": "14.2.35",
