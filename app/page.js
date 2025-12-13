@@ -138,6 +138,7 @@ function MessageText({ text }) {
 export default function HomePage() {
   const [conversations, setConversations] = useLocalStorageState(STORAGE_KEY, [defaultConversation()]);
   const [activeId, setActiveId] = useLocalStorageState('aitax.activeId.v1', conversations?.[0]?.id);
+  const [theme, setTheme] = useLocalStorageState('aitax.theme.v1', 'dark');
   const [query, setQuery] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [search, setSearch] = useState('');
@@ -174,6 +175,15 @@ export default function HomePage() {
     };
   }, [sidebarOpen]);
 
+  useEffect(() => {
+    // Keep dataset in sync
+    try {
+      document.documentElement.dataset.theme = theme || 'dark';
+    } catch {
+      // ignore
+    }
+  }, [theme]);
+
   const filteredConversations = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return conversations;
@@ -200,6 +210,35 @@ export default function HomePage() {
       const remaining = conversations.filter((c) => c.id !== id);
       return remaining[0]?.id;
     });
+  }
+
+  function clearAllConversations() {
+    const c = defaultConversation();
+    setConversations([c]);
+    setActiveId(c.id);
+    setSidebarOpen(false);
+  }
+
+  function toggleTheme() {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }
+
+  function exportActive() {
+    if (!active) return;
+    const payload = {
+      app: 'ai세금',
+      exportedAt: new Date().toISOString(),
+      conversation: active
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aitax_${active.id}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
   function applyPrompt(text) {
@@ -325,6 +364,15 @@ export default function HomePage() {
           </button>
         </div>
 
+        <div className="actions" style={{ gap: 10 }}>
+          <button className="btn" onClick={toggleTheme} title="테마 전환">
+            {theme === 'light' ? '다크 모드' : '라이트 모드'}
+          </button>
+          <button className="btn" onClick={exportActive} disabled={!active} title="현재 대화 내보내기(JSON)">
+            내보내기
+          </button>
+        </div>
+
         <div className="search">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="대화 검색" />
         </div>
@@ -355,6 +403,11 @@ export default function HomePage() {
         <div className="footerNote">
           <div className="footerLine">- 질문이 구체적일수록 정확해요.</div>
           <div className="footerLine">- 답변은 참고용이며, 중요한 의사결정은 세무사 상담을 권장합니다.</div>
+          <div className="footerLine">
+            <button className="btn danger" onClick={clearAllConversations} title="모든 대화 삭제">
+              전체 초기화
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -374,6 +427,12 @@ export default function HomePage() {
           <div className="topRight">
             <button className="btn subtle desktopOnly" onClick={newConversation}>
               새 대화
+            </button>
+            <button className="btn subtle desktopOnly" onClick={exportActive} disabled={!active}>
+              내보내기
+            </button>
+            <button className="iconBtn desktopOnly" onClick={toggleTheme} aria-label="테마 전환">
+              {theme === 'light' ? '☾' : '☀'}
             </button>
             <div className={`pill ${isSending ? 'live' : ''}`}>{isSending ? '응답 생성 중…' : '대기 중'}</div>
           </div>
