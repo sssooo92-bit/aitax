@@ -1,0 +1,64 @@
+.legal-basis-box {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-input);
+  border-radius: 0;
+}
+
+.legal-basis-box-title {
+  font-size: var(--font-size-section-label);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.legal-basis-box-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.legal-basis-box-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.legal-basis-box-label {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-sub);
+}
+
+.legal-basis-box-value {
+  font-size: var(--font-size-body);
+  color: var(--color-text-main);
+  line-height: 1.6;
+}
+
+.legal-basis-box-link {
+  font-size: var(--font-size-body);
+  color: var(--color-primary);
+  text-decoration: none;
+  word-break: break-all;
+  transition: color 0.2s ease;
+}
+
+.legal-basis-box-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.legal-basis-box-formula {
+  font-size: var(--font-size-body);
+  color: var(--color-text-main);
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.2);
+  padding: var(--spacing-sm);
+  white-space: pre-line;
+  line-height: 1.8;
+}
+

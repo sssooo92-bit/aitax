@@ -1,0 +1,97 @@
+.legal-basis-panel {
+  margin-top: var(--spacing-md);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+}
+
+.legal-basis-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.legal-basis-panel-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.legal-basis-panel-title {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+}
+
+.legal-basis-panel-toggle {
+  font-size: var(--font-size-section-label);
+  color: var(--color-text-sub);
+  user-select: none;
+}
+
+.legal-basis-panel-content {
+  padding: var(--spacing-md);
+}
+
+.legal-basis-panel-empty {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-sub);
+  font-size: var(--font-size-body);
+}
+
+.legal-basis-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.legal-basis-section:last-child {
+  margin-bottom: 0;
+}
+
+.legal-basis-section-label {
+  font-size: var(--font-size-section-label);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-xs);
+}
+
+.legal-basis-section-value {
+  font-size: var(--font-size-body);
+  color: var(--color-text-sub);
+  line-height: 1.6;
+}
+
+.legal-basis-section-formula {
+  font-size: var(--font-size-body);
+  color: var(--color-text-main);
+  font-family: 'Courier New', monospace;
+  background: var(--color-bg-input);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-input);
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+.legal-basis-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.legal-basis-source-link {
+  font-size: var(--font-size-body);
+  color: var(--color-primary);
+  text-decoration: none;
+  word-break: break-all;
+  transition: color 0.2s ease;
+  padding: var(--spacing-xs) 0;
+}
+
+.legal-basis-source-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+

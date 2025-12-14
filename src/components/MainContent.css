@@ -1,0 +1,95 @@
+/**
+ * 메인 콘텐츠 레이아웃
+ * 좌측 계산 패널 + 우측 결과/AI 패널
+ */
+
+.main-content {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--layout-padding);
+  position: relative;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 320px;
+  gap: var(--layout-gap);
+  min-height: calc(100vh - var(--header-total-height) - 96px);
+  align-items: start;
+}
+
+/* ===== 좌측 계산 패널 ===== */
+.form-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  z-index: 2;
+  /* 배경 이미지가 절대 비치지 않도록 완전 불투명 */
+  opacity: 1;
+  min-width: 0; /* 그리드 오버플로우 방지 */
+}
+
+/* ===== 우측 결과/AI 패널 ===== */
+.result-ai-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+  gap: var(--spacing-md);
+  position: relative;
+  z-index: 2;
+  /* 배경 이미지가 절대 비치지 않도록 완전 불투명 */
+  opacity: 1;
+  min-width: 0; /* 그리드 오버플로우 방지 */
+}
+
+/* ===== 광고 배너 영역 ===== */
+.ad-section {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr 1fr 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-container {
+    grid-template-columns: 1fr 1fr; /* 광고 컬럼 숨김 */
+    gap: var(--spacing-md);
+  }
+
+  .ad-section {
+    display: none; /* 태블릿에서 광고 숨김 */
+  }
+  
+  .main-content {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: var(--spacing-sm);
+  }
+  
+  .main-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .ad-section {
+    display: none; /* 모바일에서 광고 숨김 */
+  }
+}

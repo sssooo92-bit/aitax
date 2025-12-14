@@ -1,0 +1,127 @@
+/**
+ * ZERO BASE 리디자인 - CSS 변수/토큰 정의
+ * 프리미엄 SaaS 수준의 디자인 시스템
+ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+:root {
+  /* ===== 컬러 시스템 (절대 변경 금지) ===== */
+  /* Primary */
+  --color-primary: #0B3D2E;
+  --color-primary-hover: #0F4F3B;
+  --color-primary-light: rgba(11, 61, 46, 0.15);
+  
+  /* Background */
+  --color-bg-main: #0E1116;
+  --color-bg-card: #151A21;
+  --color-bg-input: #10151B;
+  --color-bg-sub: #11161C;
+  
+  /* Text */
+  --color-text-main: #E6EAF0;
+  --color-text-sub: #9AA3AF;
+  --color-text-disabled: #6B7280;
+  --color-text-warning: #F59E0B;
+  
+  /* Border */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-input: rgba(255, 255, 255, 0.1);
+  --color-border-focus: #0B3D2E;
+  
+  /* Shadow */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+  
+  /* ===== 폰트 시스템 ===== */
+  --font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  
+  /* 폰트 크기 */
+  --font-size-page-title: 24px;
+  --font-size-card-title: 18px;
+  --font-size-section-label: 14px;
+  --font-size-body: 13px;
+  --font-size-input: 16px;
+  --font-size-result-large: 32px;
+  --font-size-result-medium: 28px;
+  
+  /* 폰트 굵기 */
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+  
+  /* ===== 간격 시스템 ===== */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  
+  /* ===== 레이아웃 ===== */
+  --layout-max-width: 1440px;
+  --layout-padding: 32px;
+  --layout-gap: 24px;
+  
+  /* ===== 상단바 높이 ===== */
+  --header-main-height: 56px;
+  --header-sub-height: 44px;
+  --header-total-height: 100px;
+}
+
+body {
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-bg-main);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 워터마크 배경 레이어 */
+.app-root {
+  min-height: 100vh;
+  background: #0E1116;
+}
+
+.bg-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: url('https://images.unsplash.com/photo-1514565131-fce0801e5785?w=2000&q=80');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  filter: grayscale(100%) brightness(0.70);
+  pointer-events: none;
+}
+
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* 입력 요소 폰트 상속 */
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+}

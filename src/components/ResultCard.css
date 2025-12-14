@@ -1,0 +1,291 @@
+/**
+ * 결과 카드 UI
+ * 큰 숫자 강조, 법 근거, 공유 버튼
+ */
+
+.result-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: 0;
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  z-index: 2;
+  /* 배경 이미지가 절대 비치지 않도록 완전 불투명 */
+  opacity: 1;
+}
+
+.result-title {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin: 0;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.result-content {
+  padding: var(--spacing-md);
+}
+
+/* 결과 요약 (큰 숫자) */
+.result-summary-main {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  margin-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.result-summary-label {
+  font-size: var(--font-size-section-label);
+  color: var(--color-text-sub);
+  margin-bottom: var(--spacing-xs);
+}
+
+.result-summary-value {
+  font-size: var(--font-size-result-large);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.result-summary-unit {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-sub);
+  margin-left: var(--spacing-xs);
+}
+
+/* 결과 항목 */
+.result-item {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+}
+
+.result-item.highlight {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.result-label {
+  font-size: var(--font-size-section-label);
+  color: var(--color-text-sub);
+  margin-bottom: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.result-value {
+  font-size: var(--font-size-result-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+/* 상세 산식 (아코디언) */
+.result-breakdown {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.breakdown-title {
+  font-size: var(--font-size-section-label);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.breakdown-content {
+  margin-top: var(--spacing-sm);
+}
+
+.breakdown-step {
+  padding: var(--spacing-sm);
+  background: var(--color-bg-input);
+  border-left: 2px solid var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-body);
+  color: var(--color-text-sub);
+}
+
+.breakdown-step-number {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-right: var(--spacing-xs);
+}
+
+/* 법적 근거 */
+.result-legal-basis {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.legal-basis-title {
+  font-size: var(--font-size-section-label);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-sm);
+}
+
+.legal-basis-item {
+  padding: var(--spacing-sm);
+  background: var(--color-bg-input);
+  border-left: 2px solid var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-body);
+}
+
+.legal-basis-name {
+  color: var(--color-text-main);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 4px;
+}
+
+.legal-basis-meta {
+  color: var(--color-text-sub);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.legal-basis-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legal-basis-link:hover {
+  text-decoration: underline;
+}
+
+.legal-basis-source {
+  font-size: var(--font-size-body);
+  color: var(--color-text-sub);
+  margin-top: var(--spacing-xs);
+}
+
+.legal-basis-citation {
+  font-size: var(--font-size-body);
+  color: var(--color-text-sub);
+  margin-top: var(--spacing-xs);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* 계산 공식 요약 */
+.result-formula-summary {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-input);
+}
+
+.formula-summary-title {
+  font-size: var(--font-size-section-label);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.formula-summary-content {
+  font-size: var(--font-size-body);
+  color: var(--color-text-main);
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.2);
+  padding: var(--spacing-sm);
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+/* 면책 문구 */
+.result-disclaimer {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  font-size: var(--font-size-body);
+  color: var(--color-text-warning);
+  line-height: 1.6;
+}
+
+/* 공유 버튼 영역 */
+.result-share-section {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.share-button {
+  flex: 1;
+  min-width: 120px;
+  height: 40px;
+  padding: 0 var(--spacing-sm);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.share-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.share-button.primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.share-button.primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.share-icon {
+  font-size: 16px;
+}
+
+.share-message {
+  font-size: var(--font-size-body);
+  color: var(--color-text-sub);
+  margin-top: var(--spacing-xs);
+  text-align: center;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .result-summary-value {
+    font-size: var(--font-size-result-medium);
+  }
+  
+  .result-share-section {
+    flex-direction: column;
+  }
+  
+  .share-button {
+    width: 100%;
+  }
+}
